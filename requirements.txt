@@ -1,0 +1,4 @@
+Django==1.10.4
+django-extensions==1.7.5
+python-decouple==3.0
+six==1.10.0
