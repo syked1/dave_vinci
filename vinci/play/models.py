@@ -1,8 +1,9 @@
 from django.db import models
-
+import uuid
 # Create your models here.
 
 class Trail(models.Model):
+    uid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -18,3 +19,15 @@ class Question(models.Model):
     answer_longitude = models.FloatField(null=True)
 
 
+class CookieTracker(models.Model):
+    trail = models.ForeignKey(Trail, null=True, on_delete=models.SET_NULL, related_name='cookies')
+    uid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CookieQuestionTracker(models.Model):
+    cookie_tracker = models.ForeignKey(CookieTracker, null=True,
+                                       on_delete=models.SET_NULL, related_name='cookie_questions')
+    question = models.ForeignKey(CookieTracker, null=True,
+                                       on_delete=models.SET_NULL, related_name='cookies')
+    created_at = models.DateTimeField(auto_now_add=True)

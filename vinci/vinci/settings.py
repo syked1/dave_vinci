@@ -103,6 +103,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Sesssions
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+SESSION_COOKIE_NAME = 'vinci_session_id'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
