@@ -2,78 +2,61 @@
 {% block title %}Login{% endblock %}
 
 {% block headextra %}
+<link rel="stylesheet" type="text/css" href="../../static/css/play.css" />
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMT0Iwfs1AssyVtM1i0q52_4idSLW6vA"></script>
-
-
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 50%;
-        width:50%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-
-    <script>
-      // In the following example, markers appear when the user clicks on the map.
-      // Each marker is labeled with a single alphabetical character.
-      var questions = JSON.parse('{{ question_json | escapejs }}')
-      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      var labelIndex = 0;
-
-      function initialize() {
-        var start_location = { lat: questions[0].fields.latitude,
-           lng: questions[0].fields.longitude };
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 12,
-          center: start_location
-        });
-
-        // This event listener calls addMarker() when the map is clicked.
-        google.maps.event.addListener(map, 'click', function(event) {
-          addMarker(event.latLng, map);
-        });
-
-        // Add a marker at the center of the map.
-        addMarker(start_location, map);
-      }
-
-      // Adds a marker to the map.
-      function addMarker(location, map) {
-        // Add the marker at the clicked location, and add the next-available label
-        // from the array of alphabetical characters.
-        var marker = new google.maps.Marker({
-          position: location,
-          label: labels[labelIndex++ % labels.length],
-          map: map
-        });
-      }
-
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-
+<script type="text/javascript" src="../../static/js/jquery.js"></script>
+<script type="text/javascript" src="../../static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="../../static/js/play.js"></script>
 
 {% endblock %}
 
 {% block content %}
 
-    <div class="container" style="padding-top: 70px;" }>
+<div class="container">
 
-      <div class="row">
-        <h1>{{ trail.name }}</h1>
-        <p class="row">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+<!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">{{ trail.name }}</h1>
+    </div>
+</div>
+
+
+<div class="row">
+    <!-- Map Column -->
+    <div class="col-md-8" style="height: 80%">
+        <!-- Embedded Google Map -->
+        <div id="map" style="height: 100%; width: 100%"></div>
+    </div>
+    <!-- Questions Column -->
+    <div class="col-md-4">
+        <h3>Questions</h3>
+      		<div id="questions">
+   	  		</div>
 
     </div>
+</div>
 
 
-        <div id="map"></div>
+
+
+<!-- Footer -->
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>Copyright &copy; Your Website 2014</p>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+</div>
+
+
+    
+       
+        
 
 
 
