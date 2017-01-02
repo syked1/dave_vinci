@@ -8,6 +8,13 @@ class Trail(models.Model):
     uid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def return_question_json_string(self):
+        questions = self.questions.all()
+        question_json = json.loads(serializers.serialize("json", questions))
+        question_json_string = json.dumps(question_json)
+        return question_json_string
+
 
 
 class Question(models.Model):

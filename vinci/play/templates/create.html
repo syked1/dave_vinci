@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block headextra %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMT0Iwfs1AssyVtM1i0q52_4idSLW6vA"></script>
+
+
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+        width:50%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="padding-top: 70px;" }>
+
+      <div class="row">
+        <form action = "/create" method="post">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Submit"/>
+        </form>
+      </div>
+
+    </div>
+
+
+
+
+
+<script>
+async function post_correct(question_id) {
+    
+    let url = 'http://localhost:8080/correct?id=' + question_id
+    
+    const response = await fetch(url, {credentials: 'same-origin'});
+    json = await response.json()
+    questions = json;
+    return questions
+
+    
+}
+
+    // return fetch(url, {
+    //         credentials: 'same-origin'
+    //     })
+    //     .then((response) => {
+    //         if (response.ok) {
+    //             return response.json();
+    //         } else {
+    //             throw new Error('Server response wasn\'t OK');
+    //         }
+    //     })
+    //     .then((json) => {
+    //         return json[0];
+    //     });
+// }
+
+
+</script>
+
+
+{% endblock %}
