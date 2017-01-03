@@ -1,0 +1,65 @@
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+#map {
+  min-height: 500px;
+  height: 50%;
+  width:50%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+input[name="a_value"]{
+	width: 80%	
+}
+.toggler { width: 100%; height: 100%; }
+#button { padding: .5em 1em; text-decoration: none; }
+#effect { width: 100%; height: 100%; padding: 0.4em; position: relative; }
+#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
+.qbox { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+.qbox input{
+	background-color: #4CAF50; /* black */
+}
+#qDetails label{
+	width: 5%;
+	text-align: left;
+	padding-right: 5px;
+	
+}
+#qDetails input{
+	width: 95%;
+	
+}
+
+#qDetails form{
+	width: 100%;
+	
+}
+
+#qDetails input[type="submit"]{
+	background-color: #555555; /* black */
+    border: 2px solid #e7e7e7;
+    color: white;
+    padding: 8px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 12px;
+    border-radius: 8px;	
+	width: 50%;
+	-webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    margin: 0 auto;
+	
+}
+#qDetails input[type="submit"]:hover{
+    background-color: white; /* Green */
+    color: black;
+    border: border: 2px solid #555555;
+	
+}
+
+
+#qselect{ width: 100%; height: 50px; }
