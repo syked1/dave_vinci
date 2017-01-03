@@ -2,6 +2,10 @@
 {% block title %}Login{% endblock %}
 
 {% block headextra %}
+<<script type="text/javascript">
+	var json = '{{ question_json | escapejs }}';
+	var questions = JSON.parse(json);
+</script>
 <link rel="stylesheet" type="text/css" href="../../static/css/play.css" />
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMT0Iwfs1AssyVtM1i0q52_4idSLW6vA"></script>
 <script type="text/javascript" src="../../static/js/jquery.js"></script>

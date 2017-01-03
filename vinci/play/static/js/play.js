@@ -1,12 +1,5 @@
-var json = '{{ question_json | escapejs }}';
-//var questions = JSON.parse(json);
 var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var labelIndex = 0;
-//Dummy variables for questions
-var num_questions = 3;
-var latitude = 54.444;
-var longitude = 120.39;
-
 
 $(document).ready(function(){
 	initialize();
@@ -41,9 +34,9 @@ $(document).ready(function(){
 
 
 function initialize() {
-//    var start_location = { lat: questions[0].fields.latitude,
-//       lng: questions[0].fields.longitude };
-	var start_location = {lat: latitude, lng: longitude};
+   var start_location = { lat: questions[0].fields.latitude,
+       lng: questions[0].fields.longitude };
+
     var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: start_location
@@ -79,19 +72,71 @@ $( function() {
     });
   } );
 
-function inBoundary(lat, long){
+
+
+function inBoundary(lat_User, lon_User, ref_Lat, ref_Lon){
+	var user_vector;
+
+	var latitude_radians = function deg2rad(ref_Lat){
+		return (Math.PI * ref_Lat)/180;		
+	}
 	
+	var metre_per_degree_latitude = 111132.954 - (559.822 * math.cos(2 * latitude_radians)) + (1.175 * math.cos(4 * latitude_radians)) - (0.0023 * math.cos(6 * latitude_radians));
+    var metre_per_degree_longitude = (111412.84 * math.cos(latitude_radians)) - (93.5 * math.cos(3 * latitude_radians)) - (0.118 * math.cos(5 * latitude_radians));
+
+    var boundary_extent = 100;
 	
+
+	
+	TL_corner = [-boundary_extent, boundary_extent];
+	TR_corner = [boundary_extent, boundary_extent];
+	BR_corner = [boundary_extent, -boundary_extent];
+	BL_corner = [-boundary_extent, -boundary_extent];
+	
+	var Boundary = [TL_corner, TR_corner, BR_corner, BL_corner];
+	
+    user_vector = function getvectorfromLatLon (lat_User, lon_User){var x = (lon - ref_Lon) * metre_per_degree_longitude;
+													 		   var y = (lat - ref_Lat) * metre_per_degree_latitude;        
+													           return [x, y];}  
+    
+    
+    var n = Boundary.length;
+    var inside = False;
+
+    var p1 = Boundary[0];
+    var p1x = p1[0];
+    var p1y = p1[1];
+    var p2, p2x, p2y;
+    var X = user_vector[0];
+    var Y = user_vector[1];
+    
+
+    for (var i = 1; n; i++){
+    	p2 = Boundary[i%n];
+    	p2x = p2[0];
+    	p2y = p2[1];
+    	
+    	if (Y > Math.min(p1y, p2y)){
+    		if (Y <= Math.max(p1y, p2y)){
+    			if ( X <= Math.max(p1x, p2x)){
+    				var toggle = false;
+    				if (p1y != p2y){
+    					var xinters = (Y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x;
+    					if (x <= xinters){toggle = true;}
+    				}
+    				if (p1x == p2x || toggle == true){
+    					inside = !inside;
+    				}
+    			}
+    		}    		
+    	}
+    	p1x = p2x;
+    	p1y = p2y;   		
+    }
+
+    return inside;
 	
 }
 
-function latlonVectorMachine(lat, lon){
-	
-	
-	
-}
 
-function vectorLatLonMachine(x,y){
-	
-	
-}
+
