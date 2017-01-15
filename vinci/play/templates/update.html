@@ -3,144 +3,77 @@
 
 {% block headextra %}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMT0Iwfs1AssyVtM1i0q52_4idSLW6vA"></script>
-
-
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 50%;
-        width:50%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-
-    <script>
-      // In the following example, markers appear when the user clicks on the map.
-      // Each marker is labeled with a single alphabetical character.
-      var questions = JSON.parse('{{ question_json | escapejs }}')
-      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      var labelIndex = 0;
-      var trail_id = {{trail.id}};
-      function initialize() {
-        var start_location = { lat: questions[0].fields.latitude,
-           lng: questions[0].fields.longitude };
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 12,
-          center: start_location
-        });
-
-        // This event listener calls addMarker() when the map is clicked.
-        google.maps.event.addListener(map, 'click', function(event) {
-          addMarker(event.latLng, map);
-        });
-
-        // Add a marker at the center of the map.
-        addMarker(start_location, map);
-      }
-
-      // Adds a marker to the map.
-      function addMarker(location, map) {
-        // Add the marker at the clicked location, and add the next-available label
-        // from the array of alphabetical characters.
-        var marker = new google.maps.Marker({
-          position: location,
-          label: labels[labelIndex++ % labels.length],
-          map: map
-        });
-      }
-
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-
+<script type="text/javascript">
+	var json = '{{ question_json | escapejs }}';
+	var questions = JSON.parse(json);
+	var trail_id = {{trail.id}};
+</script>
+<link rel="stylesheet" type="text/css" href="../../static/css/play.css" />
+<link rel="stylesheet" type="text/css" href="../../static/css/jquery-ui.min.css" />
+<script type="text/javascript" src="../../static/js/jquery.js"></script>
+<script type="text/javascript" src="../../static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="../../static/js/tools.js"></script>
+<script type="text/javascript" src="../../static/js/map.js"></script>
+<script type="text/javascript" src="../../static/js/create_update.js"></script>
 
 {% endblock %}
 
 {% block content %}
 
-    <div class="container" style="padding-top: 70px;" }>
+<div class="container">
 
-      <div class="row">
-        <h1>{{ trail.name }}</h1>
-        <p class="row">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
-
+<!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">{{ trail.name }}</h1>
     </div>
+</div>
 
 
-        <div id="map"></div>
-
-
-    <div class="container" style="padding-top: 70px;" }>
-
-      <div class="row">
-        <form method="post" id="question">
-        {% csrf_token %}
-        {{form}}
-        <input type="submit" value="Submit" id="question"/>
-        </form>
-      </div>
-
-
-
+<div class="row">
+    <!-- Map Column -->
+    <div class="col-md-8" style="height: 80%">
+        <!-- Embedded Google Map -->
+        <div id="map" style="height: 100%; width: 100%"></div>
     </div>
+    <!-- Questions Column -->
+    <div class="col-md-4">
+    	<div class="row">
+    		<h3>Question Details</h3>
+  			<form method="post" id="question">
+  			{% csrf_token %}
+ 			{{form}}
+ 			</form>
+ 			
+ 			<div class="widget">
+ 				<fieldset>
+ 			 		<label for="checkbox-1">Answer is a location which player has to find</label>
+ 					<input type="checkbox" name="loc_answer_select" value="Location_Answer">
+ 				</fieldset>
+ 			</div>
+ 			
+ 			<div id="loc_ans_toggler" class="toggler">
+				<div id="effect" class="ui-widget-content ui-corner-all">
+					<div id="qDetails" class="question">
+						<span><input class="locanswer" name="ans_latitude" type="text" /></span>
+ 						<span><input class="locanswer" name="ans_longitude" type="text" /></span>
+					</div>
+				</div>
+			</div>
+  			<input type="submit" value="Submit" id="question"/>
+		</div>
+        <div class="row">
+        <!-- Insert the completed questions here using the flex tools -->
+        </div>
+    </div>
+</div>
 
-
-
-<script>
-async function post_correct(question_id) {
-    
-    let url = 'http://localhost:8080/correct?id=' + question_id
-    
-    const response = await fetch(url, {credentials: 'same-origin'});
-    json = await response.json()
-    questions = json;
-    return questions
-
-    
-}
-
-async function create_question(trail_id) {
-    //This funnction posts the new question to create it and then overwirtes the question
-    // json object.
-    //
-    let url = 'http://localhost:8080/create-question?id=' + trail_id;
-    let formData = $('form').serialize()
-    // Add headers
-    var headers = new Headers();
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    
-    const response = await fetch(url, {
-                                headers: headers,
-                                credentials:'same-origin',
-                                method: "post", 
-                                body: formData
-                              })
-    json = await response.json()
-    questions = json;
-    return questions
-
-    
-}
-
-// When document is ready, set the form submit to ajax post the new question and get 
-$(document).ready(
-                        $("#question").submit(function (event){
-                          event.preventDefault();
-                          create_question(trail_id)
-
-                          
-                        })
-                        )
-
-
-
-</script>
-
-
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>Copyright &copy; Dave Vinci 2017</p>
+            </div>
+        </div>
+    </footer>
+</div>
 {% endblock %}

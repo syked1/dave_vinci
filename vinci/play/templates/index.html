@@ -7,14 +7,38 @@
 	var questions = JSON.parse(json);
 </script>
 <link rel="stylesheet" type="text/css" href="../../static/css/play.css" />
+<link rel="stylesheet" type="text/css" href="../../static/css/jquery-ui.min.css" />
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMT0Iwfs1AssyVtM1i0q52_4idSLW6vA"></script>
 <script type="text/javascript" src="../../static/js/jquery.js"></script>
 <script type="text/javascript" src="../../static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="../../static/js/tools.js"></script>
+<script type="text/javascript" src="../../static/js/map.js"></script>
 <script type="text/javascript" src="../../static/js/play.js"></script>
+
 
 {% endblock %}
 
 {% block content %}
+<button id="InputCoords" type="button">Input User Coords</button>
+
+<div id="dialog-form" title="Input Coords">
+  <p><strong>Target Lat </strong></p>
+  <p id="TLat"></p>
+  <p><strong>Target Lon </strong></p>
+  <p id="TLon"></p>
+  <form>
+    <fieldset>
+      <label>User Latitude</label>
+      <input type="text" name="lat" id="Ulat" value="0" class="text ui-widget-content ui-corner-all">
+      <label>User Longitude</label>
+      <input type="text" name="lon" id="Ulon" value="0" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
 
 <div class="container">
 
@@ -43,57 +67,26 @@
 
 
 
+<!-- <button id="QDiscover" type="button">Discover Question</button> -->
+<!-- <button id="ADiscover" type="button">Discover Answer</button> -->
+<!-- <button id="QUndiscover" type="button">Undiscover Question</button> -->
+
+
 
 <!-- Footer -->
     <footer>
         <div class="row">
             <div class="col-lg-12">
-                <p>Copyright &copy; Your Website 2014</p>
+                <p>Copyright &copy; Dave Vinci 2017</p>
             </div>
         </div>
     </footer>
 
 </div>
 
-</div>
-
-
-    
-       
-        
 
 
 
-<script>
-async function post_correct(question_id) {
-    
-    let url = 'http://localhost:8080/correct?id=' + question_id
-    
-    const response = await fetch(url, {credentials: 'same-origin'});
-    json = await response.json()
-    questions = json;
-    return questions
-
-    
-}
-
-    // return fetch(url, {
-    //         credentials: 'same-origin'
-    //     })
-    //     .then((response) => {
-    //         if (response.ok) {
-    //             return response.json();
-    //         } else {
-    //             throw new Error('Server response wasn\'t OK');
-    //         }
-    //     })
-    //     .then((json) => {
-    //         return json[0];
-    //     });
-// }
-
-
-</script>
 
 
 {% endblock %}
