@@ -2,7 +2,7 @@
 {% block title %}Login{% endblock %}
 
 {% block headextra %}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMT0Iwfs1AssyVtM1i0q52_4idSLW6vA"></script>
+
 <script type="text/javascript">
 	var json = '{{ question_json | escapejs }}';
 	var questions = JSON.parse(json);
@@ -20,6 +20,13 @@
 
 {% block content %}
 
+<div id="dialog-Qform" title="Question Details">
+  <p><strong>Clue </strong></p>
+  <p id="QClue"></p>
+  <p><strong>Answer </strong></p>
+  <p id="QAnswer"></p>
+</div>
+
 <div class="container">
 
 <!-- Page Heading -->
@@ -32,41 +39,58 @@
 
 <div class="row">
     <!-- Map Column -->
-    <div class="col-md-8" style="height: 80%">
+    <div class="col-md-7" style="height: 80%">
         <!-- Embedded Google Map -->
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
         <div id="map" style="height: 100%; width: 100%"></div>
     </div>
     <!-- Questions Column -->
-    <div class="col-md-4">
-    	<div class="row">
+    <div class="col-md-5" style="height: 80%">
+    	<div id="InputName" name="qform" class="row">
     		<h3>Question Details</h3>
   			<form method="post" id="question">
   			{% csrf_token %}
- 			{{form}}
+  			{{ form.non_field_errors }}
+				<div class="fieldWrapper">
+	    			{{ form.question.errors }}
+	    			<label class="inputLabel" for="{{ form.question.id_for_label }}">Clue:</label><br>
+	    			{{ form.question }}
+				</div>
+				<div class="fieldWrapper">
+	    			{{ form.answer.errors }}
+	    			<label class="inputLabel" for="{{ form.answer.id_for_label }}">Answer:</label><br>
+	    			{{ form.answer }}
+				</div>
+				<input type="submit" class="btn btn-info" value="Submit" id="question"/>
  			</form>
  			
- 			<div class="widget">
- 				<fieldset>
- 			 		<label for="checkbox-1">Answer is a location which player has to find</label>
- 					<input type="checkbox" name="loc_answer_select" value="Location_Answer">
- 				</fieldset>
- 			</div>
+<!--  			<div class="widget"> -->
+<!--  				<fieldset> -->
+<!--  			 		<label for="checkbox-1">Answer is a location which player has to find</label> -->
+<!--  					<input type="checkbox" name="loc_answer_select" value="Location_Answer"> -->
+<!--  				</fieldset> -->
+<!--  			</div> -->
  			
- 			<div id="loc_ans_toggler" class="toggler">
-				<div id="effect" class="ui-widget-content ui-corner-all">
-					<div id="qDetails" class="question">
-						<span><input class="locanswer" name="ans_latitude" type="text" /></span>
- 						<span><input class="locanswer" name="ans_longitude" type="text" /></span>
-					</div>
-				</div>
-			</div>
-  			<input type="submit" value="Submit" id="question"/>
+<!--  			<div id="loc_ans_toggler" class="toggler"> -->
+<!-- 				<div id="effect" class="ui-widget-content ui-corner-all"> -->
+<!-- 					<div id="qDetails" class="question"> -->
+<!-- 						<span><input class="locanswer" name="ans_latitude" type="text" /></span> -->
+<!--  						<span><input class="locanswer" name="ans_longitude" type="text" /></span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+  			
 		</div>
-        <div class="row">
-        <!-- Insert the completed questions here using the flex tools -->
-        </div>
+
     </div>
+
 </div>
+    <div class="row">
+    <!-- Insert the completed questions here using the flex tools -->
+    	<div id="completeQuestions">
+
+    	</div>
+    </div>
 
     <footer>
         <div class="row">

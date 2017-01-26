@@ -136,9 +136,8 @@ async function post_correct(question_id) {
     let url = 'http://localhost:8080/correct?id=' + question_id
     
     const response = await fetch(url, {credentials: 'same-origin'});
-    json = await response.json()
-    questions = json;
-    return questions
+    json = await response.json();
+    return json
     
 }
 

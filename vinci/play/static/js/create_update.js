@@ -1,44 +1,34 @@
 var questionIndex = 0;
-var UserCoords = {};
 var target = {
 		  latitude : 0,
 		  longitude: 0
 		};
+var targetselected = false;
+var question;
 
-var labelIndex = 0;
-var start_location = new google.maps.LatLng(51.53,-0.13);	
-
-      
+{
+	showCompleteQuestions();	
+}
  
-$(document).ready(function(){
-	initialize();
-	google.maps.event.addDomListener(window, 'load', initialize);
-    google.maps.event.addListener(map, 'click', function(event) {
-        addMarker(event.latLng, map);
-      });
-	
-	
-	//When document is ready, set the form submit to ajax post the new question and get 
-	$("#question").submit(function (event){
-        event.preventDefault();
-        create_question(trail_id)
-	});
-	
-	$('input[type=checkbox]').change(
-		    function(){
-		        if (this.checked) {
-		            $("#loc_ans_toggler").show();
-		        }
-		        else{$("#loc_ans_toggler").hide();}
-		    });
+$(document).on('submit','#question',function(e){
+	e.preventDefault();
+	if (targetselected == false){
+		custom_alert("Please use the map to select a location","Warning");
+	}
+	else{
+		deleteMarkers();
+		targetselected = false;
+		$("#question")[0].reset();
+		create_question(trail_id).then(showCompleteQuestions());
+	}
+
 });
 
-
 async function create_question(trail_id) {
-//This funnction posts the new question to create it and then overwirtes the question
+//This funnction posts the new question to create it and then overwrites the question
 // json object.
 //
-let url = 'http://localhost:8080/create-question?id=' + trail_id;
+let url = 'http://localhost:8080/create-question?id=' + trail_id; // Something needed in here to submit a question based on its questionIndex so that questions can be edited
 let formData = $('form').serialize()
 // Add headers
 var headers = new Headers();
@@ -55,81 +45,48 @@ questions = json;
 return questions
 }
 
-function updateJSON(){
-	if (questionLocationCheck == true){
-		questions[questionIndex].fields.discovered = true;
-		updateQuestions();	
-	}
-	else if (answerLocationCheck = true){
-		var questionID = questions[questionIndex].pk;		
-		post_correct(questionID).then(updateQuestions());	
-	}
-}
-
-function update(){
-	
-	questionLocationCheck = false;
-	answerLocationCheck = false;
-//Check values for field names here	
-	if (questions[questionIndex].fields.discovered == true){
-		if(questions[questionIndex].fields.location_answer == true){
-			answerLocationCheck = true;
-			target.latitude = questions[questionIndex].fields.answer_latitude;
-			target.longitude = questions[questionIndex].fields.answer_longitude;
-					
-		}
-		else{
-			target.latitude = "";
-			target.longitude = "";
-		}
-		
-	}
-	else{
-		questionLocationCheck = true;	
-		target.latitude = questions[questionIndex].fields.latitude;
-		target.longitude = questions[questionIndex].fields.longitude;
-		
+function showCompleteQuestions(){
+	for (var i=0; i< questions.length; i++){
+		$("#completeQuestions").html("");
+		deleteMarkers();
+		for (var i=0; i< questions.length; i++){
+			questionIndex = i+1;
+			$('#completeQuestions').append(	'<button class="item" type="submit" value="'+ i + '"> Question' + (i+1) + '</button>'				   
+			);		
 	}	
 }
-
-$(document).on('submit','#qform',function(e){
-	e.preventDefault();
-	var answer = $(this).find('.answer').val();
-	if (answer == questions[questionIndex].fields.answer){		
-		var questionID = questions[questionIndex].pk;		
-		post_correct(questionID).then(updateQuestions());
-	}
-});
+}
 
 
-
-$(function(){
-	$(document).on("click",".qbox", function(event) {
-		var target = $(event.target);
-	      if(target.is(".answer") || target.is("#submit")) return;
-	      else {$(this).find(".toggler").toggle();}		
-	  } );
-	});
 
 $(function(){
 	var dialog, form;
 	
-	$( "#InputCoords" ).click( function() {
-		document.getElementById('TLat').innerHTML = target.latitude;
-		document.getElementById('TLon').innerHTML = target.longitude;
+	$(".item").click(function(e){
+		e.preventDefault();
+		var target = e.target;
+		questionIndex = Number(target.value);
+		question = questions[questionIndex];
+		document.getElementById('QClue').innerHTML = question.fields.question;
+		document.getElementById('QAnswer').innerHTML = question.fields.answer;
 		dialog.dialog( "open" );
-	  } );
-	
-	function updateLatLon(){
-		UserCoords.latitude = document.getElementById("Ulat").value;
-		UserCoords.longitude = document.getElementById("Ulon").value;
-		let found = inBoundary(UserCoords.latitude, UserCoords.longitude, target.latitude, target.longitude);
-		if (found == true){
-			  updateJSON();
-		}
-	}	
+		
 
-	dialog = $( "#dialog-form" ).dialog({
+	});
+	
+	function editQuestion(){
+		deleteMarkers();
+		document.getElementById("id_question").innerHTML = question.fields.question
+		document.getElementById("id_answer").innerHTML = question.fields.answer
+		var pin_location = { lat: question.fields.latitude,
+			       lng: question.fields.longitude };
+	    addMarker(pin_location, map, selected = true);	
+	    updateLatLng(pin_location);
+	    refitMap();
+	}
+
+
+	dialog = $( "#dialog-Qform" ).dialog({
 	    autoOpen: false,
 	    height: 400,
 	    width: 350,
@@ -139,9 +96,9 @@ $(function(){
 	    	   at: "center",
 	    	   of: window},
 	    buttons: {
-	      "Submit LatLon": function(){
+	      "Edit": function(){
 	    	  $(this).dialog('close');
-	    	  updateLatLon();
+	    	  editQuestion();
 	      },
 	      Cancel: function() {
 	        dialog.dialog( "close" );
@@ -151,4 +108,25 @@ $(function(){
 
 });
 
+function updateLatLng(LatLon){
+	target["latitude"] = LatLon["lat"];
+	target["longitude"] = LatLon["lng"];
+	targetselected = true;	
+}
 
+//$(function(){
+//$(document).on("click",".qbox", function(event) {
+//	var target = $(event.target);
+//      if(target.is(".answer") || target.is("#submit")) return;
+//      else {$(this).find(".toggler").toggle();}		
+//  } );
+//});
+
+
+//$('input[type=checkbox]').change(
+//function(){
+//    if (this.checked) {
+//        $("#loc_ans_toggler").show();
+//    }
+//    else{$("#loc_ans_toggler").hide();}
+//});

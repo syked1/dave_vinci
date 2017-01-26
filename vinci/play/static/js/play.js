@@ -9,11 +9,9 @@ var target = {
 var start_location = { lat: questions[0].fields.latitude,
 	       lng: questions[0].fields.longitude };
 
-$(document).ready(function(){
-	initialize();
-	google.maps.event.addDomListener(window, 'load', initialize);
+function initPage(){
 	updateQuestions();	
-});
+}
 
 function updateQuestions(){
 	//might be able to do something here to work from the question index so not all the questions and markers are updated
@@ -42,7 +40,7 @@ function updateQuestions(){
 		
 	}
 	$('.toggler').hide();
-	if (questionIndex > 0){
+	if (questionIndex >= 0){
 		refitMap();
 	}	
 	play();
@@ -67,21 +65,21 @@ function rendercorrectQuestion(j){
 
 function renderdiscoveredQuestion(k){
 	
-	if (questions[k].fields.locationanswer == true){
-		$('#questions').prepend('<div class="qbox" type="submit"> '+
-				'<input id="qselect" type="submit" value="Question '+ (k+1) + '">'+
-				   '<div class="toggler">'+
-				   	'<div id="effect" class="ui-widget-content ui-corner-all">'+
-						'<div id="qDetails" class="question">'+
-						   	'<p><strong>Clue.</strong>'+ questions[k].fields.question  +'</p>'+
-						   	'<p><strong>A.</strong>'+ questions[k].fields.answer  +'</p>'+
-					    '</div>'+
-					'</div>'+
-				'</div>'+
-		   '</div>'
-		);	
-	}
-	else{
+//	if (questions[k].fields.locationanswer == true){
+//		$('#questions').prepend('<div class="qbox" type="submit"> '+
+//				'<input id="qselect" type="submit" value="Question '+ (k+1) + '">'+
+//				   '<div class="toggler">'+
+//				   	'<div id="effect" class="ui-widget-content ui-corner-all">'+
+//						'<div id="qDetails" class="question">'+
+//						   	'<p><strong>Clue.</strong>'+ questions[k].fields.question  +'</p>'+
+//						   	'<p><strong>A.</strong>'+ questions[k].fields.answer  +'</p>'+
+//					    '</div>'+
+//					'</div>'+
+//				'</div>'+
+//		   '</div>'
+//		);	
+//	}
+//	else{
 		$('#questions').prepend('<div class="qbox" type="submit"> '+
 				'<input id="qselect" type="submit" value="Question '+ (k+1) + '">'+
 				   '<div class="toggler">'+
@@ -98,7 +96,7 @@ function renderdiscoveredQuestion(k){
 				'</div>'+
 		   '</div>'
 		);	
-	}
+//	}
 
 }
 
@@ -107,28 +105,28 @@ function updateJSON(){
 		questions[questionIndex].fields.discovered = true;
 		updateQuestions();	
 	}
-	else if (answerLocationCheck = true){
-		var questionID = questions[questionIndex].pk;		
-		post_correct(questionID).then(updateQuestions());	
-	}
+//	else if (answerLocationCheck = true){
+//		var questionID = questions[questionIndex].pk;		
+//		post_correct(questionID).then(updateQuestions());	
+//	}
 }
 
 function play(){
 	
 	questionLocationCheck = false;
-	answerLocationCheck = false;
+//	answerLocationCheck = false;
 //Check values for field names here	
 	if (questions[questionIndex].fields.discovered == true){
-		if(questions[questionIndex].fields.location_answer == true){
-			answerLocationCheck = true;
-			target.latitude = questions[questionIndex].fields.answer_latitude;
-			target.longitude = questions[questionIndex].fields.answer_longitude;
-			//geolocator(target);			
-		}
-		else{
+//		if(questions[questionIndex].fields.location_answer == true){
+//			answerLocationCheck = true;
+//			target.latitude = questions[questionIndex].fields.answer_latitude;
+//			target.longitude = questions[questionIndex].fields.answer_longitude;
+//			//geolocator(target);			
+//		}
+//		else{
 			target.latitude = "";
 			target.longitude = "";
-		}
+//		}
 		
 	}
 	else{
@@ -143,9 +141,25 @@ $(document).on('submit','#qform',function(e){
 	e.preventDefault();
 	var answer = $(this).find('.answer').val();
 	if (answer == questions[questionIndex].fields.answer){		
-		var questionID = questions[questionIndex].pk;		
-		post_correct(questionID).then(updateQuestions());
+		var questionID = questions[questionIndex].pk;
+		$(this).find('.answer').val('');
+		answer_alert("Congratulations you are correct!");
+		setTimeout( function () { 
+	        window.parent.$('#AnsAlert').dialog('close'); 
+	    }, 2000 // milliseconds delay
+	);
+		
+		questions = post_correct(questionID).then(updateQuestions());
+		
 	}
+	else{
+		$(this).find('.answer').val('');
+		answer_alert("Sorry that is not right, please try again!");
+		setTimeout( function () { 
+	        window.parent.$('#AnsAlert').dialog('close'); 
+	    }, 2000 // milliseconds delay
+	);
+		}
 });
 
 $(function(){
@@ -159,29 +173,29 @@ $(function(){
 
 // Spoofing functions - These can be removed when app is functioning with geolocation
 
-$(function(){
-	$( "#QDiscover" ).click( function(e) {
-		e.preventDefault();
-		questions[questionIndex].fields.discovered = true;
-		updateQuestions();		
-	  } );
-});
-
-$(function(){
-	$( "#ADiscover" ).click( function(e) {
-		e.preventDefault();
-		var questionID = questions[questionIndex].pk;		
-		post_correct(questionID).then(updateQuestions());	
-	  } );
-});
-
-$(function(){
-	$( "#QUndiscover" ).click( function(e) {
-		e.preventDefault();
-		questions[questionIndex].fields.discovered = false;
-		updateQuestions();		
-	  } );
-});
+//$(function(){
+//	$( "#QDiscover" ).click( function(e) {
+//		e.preventDefault();
+//		questions[questionIndex].fields.discovered = true;
+//		updateQuestions();		
+//	  } );
+//});
+//
+//$(function(){
+//	$( "#ADiscover" ).click( function(e) {
+//		e.preventDefault();
+//		var questionID = questions[questionIndex].pk;		
+//		post_correct(questionID).then(updateQuestions());	
+//	  } );
+//});
+//
+//$(function(){
+//	$( "#QUndiscover" ).click( function(e) {
+//		e.preventDefault();
+//		questions[questionIndex].fields.discovered = false;
+//		updateQuestions();		
+//	  } );
+//});
 
 $(function(){
 	var dialog, form;
@@ -223,4 +237,11 @@ $(function(){
 
 });
 
+function answer_alert(output_msg)
+{
 
+    $("#AnsAlert").html(output_msg).dialog({
+        resizable: false,
+        modal: true
+    });
+}
